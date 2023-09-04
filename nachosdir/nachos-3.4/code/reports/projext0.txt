@@ -1,0 +1,73 @@
+Project 0 report for Group 7
+
+Experience of Nagarjun Tumkur Sharathkumar (6366321)
+
+1.  Your experience installing Nachos w/ platform details. 
+
+Installation process of Nachos - I followed the instructions provided in the document 
+to ensure a smooth installation process. I downloaded the "nachos-3.4-linux.tar" file 
+and moved it to a remote server using the WinSCP application. After doing SSH into the 
+dedicated remote server, I created a directory named "nachosdir," extracted the Nachos 
+files from tar file, and navigated to the "nachos-3.4/code" directory. Then I entered 
+'make' command to compile the nachos, it resulted in the creation of the 
+"gnu-decstation-ultrix" and "nachos-3.4" directories. This allowed me to complete the 
+installation process effectively. 
+
+2.  Your experience w/ the tests. 
+
+To familiarize myself with Nachos Project, first I executed the command "./threads/nachos". 
+This led to an analysis of the system, and I observed the output representing loops of threads. 
+Then I executed the command "./nachos -x ../test/halt" from the "userprog" directory. 
+This provided the output about the NACHOS simulation's ticks, I/O operations, paging, 
+and network I/O. Further, I executed the command "./nachos -s -x ../test/halt" to get an 
+insight into machine registers and their behaviour over the time.
+
+3. A description of the Thread class in Nachos. 
+
+The 'Thread' class in NACHOS serves as a building block for concurrent execution, 
+representing individual threads of control within the operating system. It 
+encapsulates essential thread attributes like ID and state (like ready, running, blocked), 
+also it maintains thread-specific stacks, which provides the execution context to be stored, 
+and it offers multiple methods to initiate thread execution (e.g. Fork()),  
+control to be yielded to other threads (e.g. Yield()), manage time delays (Sleep()), 
+synchronize with other threads (Join()), and  termination handle mechanism(Finish()). 
+This class forms the basis for comprehending and implementing synchronization and 
+multitasking  concepts in OS. 
+
+
+
+
+Experience of Dillon Archer (6224872)
+
+1. Your experience installing Nachos wil platform details.
+
+To install nachos, I began by creating a github repository named nachos. I logged
+onto the linux server wolf.cis.fiu.edu, imported the tar file using the wget command into
+the downloads folder, then unpacked it in the nachos repository. From there, I ran
+the make command to compile the nachos OS. Once I performed the tests and confirmed 
+that everything installed correctly, I uploaded the modified repository to github.
+
+2. Your experience with the tests.
+
+After compiling the nachos OS system, I ran the nachos executable in the threads/ folder.
+I noted that there were two threads that looped 4 times each. After the fourth
+execution of each thread, the program assumed completion as there were no pending
+interrupts or any threads ready and running. Next, I went to the userprog/ folder and ran
+the ./nachos -x ../test/halt and ./nachos -s -x ../test/halt commands. These commands
+simply perform a system call which shuts down the operating system after running with the second
+command showing each step the operating system makes in running this command
+when the syscall is made. It shows 38 of the 40 registers present and their contents in the 
+operating system.
+
+3. A description of the thread class in nachos
+
+The threads/ class in nachos allows the OS to run multiple processes in parallel or allows
+simultaneous execution of various parts of a process. It has mutilple states that it 
+can take during execution. These are READY, RUNNING, BLOCKED, and JUST_CREATED. The ready
+state indicates that the thread is ready for exection, but another thread is currently running.
+The RUNNING state indicates that the thread is currently running on the CPU. The BLOCKED
+state indicates that the thread's exeuction has been stopped until some external everything
+is completed. The JUST_CREATED state indicates that the thread has just been created but has
+no stack yet. The thread class also supports a number of functions to aid in the running of
+created thread objects such as the *Thread() constructor, Fork(), StackAllocate(), Yield(), '
+Sleep(), and Finish() functions.
