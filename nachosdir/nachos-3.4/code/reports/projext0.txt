@@ -71,3 +71,24 @@ is completed. The JUST_CREATED state indicates that the thread has just been cre
 no stack yet. The thread class also supports a number of functions to aid in the running of
 created thread objects such as the *Thread() constructor, Fork(), StackAllocate(), Yield(), '
 Sleep(), and Finish() functions.
+
+Experience of Anne Nguyen (5643071)
+1. Your experience installing Nachos with platform details 
+I first attempted to get Nachos set up using Windows Subsystem for Linux(WSL). 
+The main issue with using WSL was that it needed to update all the packages and set the 
+environment to the correct path. But the issue that made me switch to wolf.cs.fiu.edu was the 
+lack of libraries not being where they are expected to be on WSL. On the wolf server, everything 
+ran well and was quick to be set up. What I ended up doing was that I used Window's OpenSSH client 
+to work with the nachos file as needed.
+2. Your experience with the tests
+The tests ran well and were quick to process. The threads demo resulted in the expected output 
+and had 130 system ticks in total. The user program halt contained mainly the halt system command 
+and it brought the current process to exit. Using the single step mode, I was able to see how the 
+simple program were not calling much but it iterated through 12 additional ticks so I could see how 
+the program changed through each step.
+3. A description of the thread class in Nachos
+The thread class in Nachos is the main command unit of the thread demo. It contained the commands 
+to make the threads run, make the threads yield processing power to other threads, putting the threads 
+to sleep, sending the completed signal when a thread was done executing, checking if the stack overflowed, 
+and outputting a status. It also had segments divided between private and public settings, showing the value 
+of security to the programmer behind the class.
