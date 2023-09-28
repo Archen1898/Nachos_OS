@@ -14,6 +14,8 @@
 
 // testnum is set in main.cc
 int testnum = 1;
+// number of thread count
+int nameNum = 0;
 
 //----------------------------------------------------------------------
 // SimpleThread
@@ -48,8 +50,8 @@ ThreadTest1()
 
     Thread *t = new Thread("forked thread");
 
-    t->Fork(SimpleThread, 1);
-    SimpleThread(0);
+    t->Fork(SimpleThread, nameNum+1);
+    SimpleThread(nameNum);
 }
 
 //----------------------------------------------------------------------
@@ -58,11 +60,14 @@ ThreadTest1()
 //----------------------------------------------------------------------
 
 void
-ThreadTest()
+ThreadTest(int numOfThreads)
 {
     switch (testnum) {
     case 1:
-	ThreadTest1();
+    for(int i=0; i<numOfThreads-1; i++){
+	    ThreadTest1();
+        nameNum++;
+    }
 	break;
     default:
 	printf("No test specified.\n");
