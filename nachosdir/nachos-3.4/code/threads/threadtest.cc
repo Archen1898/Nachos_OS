@@ -49,7 +49,9 @@ ThreadTest1()
     DEBUG('t', "Entering ThreadTest1");
 
     Thread *t = new Thread("forked thread");
+    Thread *f = new Thread("second forked thread");
 
+    f->Fork(SimpleThread,nameNum+2);
     t->Fork(SimpleThread, nameNum+1);
     SimpleThread(nameNum);
 }
