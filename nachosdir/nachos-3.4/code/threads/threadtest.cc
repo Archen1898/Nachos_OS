@@ -28,7 +28,7 @@ int SharedVariable;
 void SimpleThread(int which)
 {
     int num, val;
-    
+
     for (num = 0; num < 5; num++) {
         val = SharedVariable;
 	    printf("*** thread %d looped %d times\n", which, num);
@@ -51,7 +51,7 @@ ThreadTest1(int n)
 {
     DEBUG('t', "Entering ThreadTest1");
     
-    for(int i=0; i <n-1; i++){
+    for(int i=0; i <n; i++){
         Thread *t = new Thread("forked thread");
         t->Fork(SimpleThread, i+1);
     }
