@@ -14,8 +14,6 @@
 
 // testnum is set in main.cc
 int testnum = 1;
-// number of thread count
-int nameNum = 0;
 
 //----------------------------------------------------------------------
 // SimpleThread
@@ -51,9 +49,8 @@ ThreadTest1(int n)
     for(int i=0; i <n; i++){
         Thread *t = new Thread("forked thread");
         t->Fork(SimpleThread, i);
-        nameNum++;
     }
-    //SimpleThread(nameNum);
+
 }
 
 //----------------------------------------------------------------------
