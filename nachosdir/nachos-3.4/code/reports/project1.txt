@@ -1,2 +1,11 @@
+Project 1 Report for Group 7
+
 Exercise 1 - Dillon Archer 6224872
+
+For the first part of this exercise, I modified Threadtest1() to take n number of integers by 
+implementing a for loop. This allowed the function to fork 'n' number of Threads 
+which call SimpleThread(). Next, I modified SimpleThread to share a variable called
+SharedVariable between all of the forked and original threads. Once the for loop within
+SimpleThread is completed, SharedVariable is stored within val and displayed using a printf statment
+to show what value each thread sees within the function call.
 
