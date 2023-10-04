@@ -32,21 +32,28 @@ void SimpleThread(int which)
 {
     int num, val;
 
+    for(num = 0; num<5; num++){
+        val = SharedVariable;
+	    printf("*** thread %d looped %d times\n", which, num);
+        SharedVariable = val+1;
+        s.P();
+    }
+    val = SharedVariable;
+    printf("Thread %d sees final value %d\n", which, val);
     
 //    for (num = 0; num < 5; num++) {
-//        val = SharedVariable;
-//	  printf("*** thread %d looped %d times\n", which, num);
-//        currentThread->Yield();
-// 	  s.P();
-//        testNum+=1;
-//        SharedVariable = val+1;
+//      val = SharedVariable;
+//	    printf("*** thread %d looped %d times\n", which, num);
+//      currentThread->Yield();
+// 	    s.P();
+//      testNum+=1;
+//      SharedVariable = val+1;
 	
-//	printf("***Current Value of testNum: %d\n",testNum);
-//       currentThread -> Yield();
+//	    printf("***Current Value of testNum: %d\n",testNum);
+//      currentThread -> Yield();
 //    }
-    val = SharedVariable;
-	s.V();
-    printf("Thread %d sees final value %d\n", which, val);
+//    val = SharedVariable;
+//    printf("Thread %d sees final value %d\n", which, val);
 }
 
 //----------------------------------------------------------------------
