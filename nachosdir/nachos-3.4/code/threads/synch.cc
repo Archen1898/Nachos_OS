@@ -64,6 +64,7 @@ Semaphore::~Semaphore()
 void
 Semaphore::P()
 {
+    printf("Semaphore P() function executes\n");
     IntStatus oldLevel = interrupt->SetLevel(IntOff);	// disable interrupts
     
     while (value == 0) { 			// semaphore not available
@@ -87,6 +88,7 @@ Semaphore::P()
 void
 Semaphore::V()
 {
+    printf("Semaphore V() function executes\n");
     Thread *thread;
     IntStatus oldLevel = interrupt->SetLevel(IntOff);
 

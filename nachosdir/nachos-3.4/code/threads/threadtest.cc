@@ -11,7 +11,7 @@
 
 #include "copyright.h"
 #include "system.h"
-#include "synch.cc"
+#include "synch.h"
 
 // testnum is set in main.cc
 int testnum = 1;
@@ -24,23 +24,28 @@ int testnum = 1;
 //	"which" is simply a number identifying the thread, for debugging
 //	purposes.
 //----------------------------------------------------------------------
+char *debug_char;
+Semaphore s(debug_char,0) ;
 
-Semaphore *s;
-
-int SharedVariable;
+int SharedVariable,testNum;
 void SimpleThread(int which)
 {
-    int num, val, testNum=0;
-    for (num = 0; num < 5; num++) {
-        val = SharedVariable;
-	printf("*** thread %d looped %d times\n", which, num);
-        currentThread->Yield();
-        testNum++;
-        SharedVariable = val+1;
-	printf("***Current Value of testNum: %d\n",testNum);
-        currentThread -> Yield();
-    }
+    int num, val;
+
+    
+//    for (num = 0; num < 5; num++) {
+//        val = SharedVariable;
+//	  printf("*** thread %d looped %d times\n", which, num);
+//        currentThread->Yield();
+// 	  s.P();
+//        testNum+=1;
+//        SharedVariable = val+1;
+	
+//	printf("***Current Value of testNum: %d\n",testNum);
+//       currentThread -> Yield();
+//    }
     val = SharedVariable;
+	s.V();
     printf("Thread %d sees final value %d\n", which, val);
 }
 
