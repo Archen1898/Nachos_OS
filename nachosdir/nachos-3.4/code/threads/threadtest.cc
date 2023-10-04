@@ -31,9 +31,10 @@ void SimpleThread(int which)
 
     for (num = 0; num < 5; num++) {
         val = SharedVariable;
-	    printf("*** thread %d looped %d times\n", which, num);
+	printf("*** thread %d looped %d times\n", which, num);
         currentThread->Yield();
         SharedVariable = val+1;
+	//printf("***Current Value of Shared Variable: %d\n",SharedVariable);
         currentThread -> Yield();
     }
     val = SharedVariable;
