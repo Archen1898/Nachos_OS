@@ -32,41 +32,46 @@ void SimpleThread(int which)
 {
     int num, val;
 
-    //#ifdef HW1_SEMAPHORES
-    s.V();
+//If HW1_SEMAPHORES is defined then proper thread synchronization using 
+//semaphores is enabled
 
-    for(num = 0; num<5; num++){
-	//This is the start of the critical section
-	s.P();
-        val = SharedVariable;
-	printf("*** thread %d looped %d times\n", which, num);
-	SharedVariable = val+1;
-	counter++;
-	//This is the end of the critical section
-	s.V();
-	currentThread->Yield();
-    }
-    if(counter<15)
-    	s.P();
-    val = SharedVariable;
-    printf("Thread %d sees final value %d\n", which, val);
+    #ifdef HW1_SEMAPHORES
+    	s.V();
+
+    	for(num = 0; num<5; num++){
+		//This is the start of the critical section
+		s.P();
+        	val = SharedVariable;
+		printf("*** thread %d looped %d times\n", which, num);
+		SharedVariable = val+1;
+		counter++;
+		//This is the end of the critical section
+		s.V();
+		currentThread->Yield();
+    	}
+    	while(counter<15)
+    	currentThread->Yield();
+    	val = SharedVariable;
+    	printf("Thread %d sees final value %d\n", which, val);
     
-    //#endif
+    #endif
+
+//If HW1_SEMAPHORES is not defined then SimpleThread() runs
+//without proper thread sychronization
+
     #ifndef HW1_SEMAPHORES
-//    for (num = 0; num < 5; num++) {
-//      val = SharedVariable;
-//	    printf("*** thread %d looped %d times\n", which, num);
-//      currentThread->Yield();
-// 	    s.P();
-//      testNum+=1;
-//      SharedVariable = val+1;
-	
-//	    printf("***Current Value of testNum: %d\n",testNum);
-//      currentThread -> Yield();
-//    }
-//    val = SharedVariable;
-//    printf("Thread %d sees final value %d\n", which, val);
-     #endif
+    	for (num = 0; num < 5; num++) {
+     		val = SharedVariable;
+      		printf("*** thread %d looped %d times\n", which, num);
+      		currentThread->Yield();
+      		s.P();
+      		testNum+=1;
+      		SharedVariable = val+1;	
+      		currentThread -> Yield();
+    	}
+    	val = SharedVariable;
+    	printf("Thread %d sees final value %d\n", which, val);
+    #endif
 }
 
 //----------------------------------------------------------------------
