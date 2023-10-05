@@ -27,20 +27,32 @@ int testnum = 1;
 char *debug_char;
 Semaphore s(debug_char,0) ;
 
-int SharedVariable,testNum;
+int SharedVariable,testNum,counter;
 void SimpleThread(int which)
 {
     int num, val;
 
+    //#ifdef HW1_SEMAPHORES
+    s.V();
+
     for(num = 0; num<5; num++){
+	//This is the start of the critical section
+	s.P();
         val = SharedVariable;
-	    printf("*** thread %d looped %d times\n", which, num);
-        SharedVariable = val+1;
-        s.P();
+	printf("*** thread %d looped %d times\n", which, num);
+	SharedVariable = val+1;
+	counter++;
+	//This is the end of the critical section
+	s.V();
+	currentThread->Yield();
     }
+    if(counter<15)
+    	s.P();
     val = SharedVariable;
     printf("Thread %d sees final value %d\n", which, val);
     
+    //#endif
+    #ifndef HW1_SEMAPHORES
 //    for (num = 0; num < 5; num++) {
 //      val = SharedVariable;
 //	    printf("*** thread %d looped %d times\n", which, num);
@@ -54,6 +66,7 @@ void SimpleThread(int which)
 //    }
 //    val = SharedVariable;
 //    printf("Thread %d sees final value %d\n", which, val);
+     #endif
 }
 
 //----------------------------------------------------------------------
