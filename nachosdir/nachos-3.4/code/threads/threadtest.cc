@@ -49,8 +49,8 @@ void SimpleThread(int which)
 		s.V();
 		currentThread->Yield();
     	}
-    	while(counter<15)
-    	currentThread->Yield();
+    	while(counter<n*5)
+    	    currentThread->Yield();
     	val = SharedVariable;
     	printf("Thread %d sees final value %d\n", which, val);
     
