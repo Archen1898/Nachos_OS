@@ -43,7 +43,8 @@ void SimpleThread(int which)
 		//This is the start of the critical section
 		s.P();
         	val = SharedVariable;
-		printf("*** thread %d looped %d times\n", which, num);
+		//printf("*** thread %d looped %d times\n", which, num);
+		printf("*** thread %d looped %d times\n", which, val);
 		SharedVariable = val+1;
 		counter++;
 		//This is the end of the critical section
