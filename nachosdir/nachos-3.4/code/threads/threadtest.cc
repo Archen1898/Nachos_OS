@@ -15,6 +15,7 @@
 
 // testnum is set in main.cc
 int testnum = 1;
+int numThreadsActive; // to stop post completion
 
 //----------------------------------------------------------------------
 // SimpleThread
@@ -27,6 +28,7 @@ int testnum = 1;
 char *debug_char;
 Semaphore s(debug_char,0) ;
 
+#ifdef HW1_SEMAPHORES
 int SharedVariable,testNum,counter;
 void SimpleThread(int which)
 {
@@ -35,7 +37,6 @@ void SimpleThread(int which)
 //If HW1_SEMAPHORES is defined then proper thread synchronization using 
 //semaphores is enabled
 
-    #ifdef HW1_SEMAPHORES
     	s.V();
 
     	for(num = 0; num<5; num++){
@@ -49,37 +50,76 @@ void SimpleThread(int which)
 		s.V();
 		currentThread->Yield();
     	}
-    	while(counter<n*5)
-    	    currentThread->Yield();
+    	while(counter<15)
+    	currentThread->Yield();
     	val = SharedVariable;
     	printf("Thread %d sees final value %d\n", which, val);
     
-    #endif
-
+    
 //If HW1_SEMAPHORES is not defined then SimpleThread() runs
 //without proper thread sychronization
 
-    #ifndef HW1_SEMAPHORES
-    	for (num = 0; num < 5; num++) {
-     		val = SharedVariable;
-      		printf("*** thread %d looped %d times\n", which, num);
-      		currentThread->Yield();
-      		s.P();
-      		testNum+=1;
-      		SharedVariable = val+1;	
-      		currentThread -> Yield();
-    	}
-    	val = SharedVariable;
-    	printf("Thread %d sees final value %d\n", which, val);
-    #endif
+    // #ifndef HW1_SEMAPHORES
+    // 	for (num = 0; num < 5; num++) {
+    //  		val = SharedVariable;
+    //   		printf("*** thread %d looped %d times\n", which, num);
+    //   		currentThread->Yield();
+    //   		s.P();
+    //   		testNum+=1;
+    //   		SharedVariable = val+1;	
+    //   		currentThread -> Yield();
+    // 	}
+    // 	val = SharedVariable;
+    // 	printf("Thread %d sees final value %d\n", which, val);
+    // #endif
 }
+#elif defined(HW1_LOCKS)
+int SharedVariable;
+Lock * loc;
+void SimpleThread(int which) {
+    if(loc == NULL)
+        {
+        loc = new Lock("myloc");
+        }
+
+    int num, val;
+    for(num = 0; num < 5; num++) { 
+    loc->Acquire();
+    val = SharedVariable;
+    printf("*** thread %d sees value %d\n", which, val);
+    currentThread->Yield(); 
+    SharedVariable = val+1; 
+    loc->Release();
+    currentThread->Yield();
+    }
+    numThreadsActive--;
+    while(numThreadsActive!=0){
+    currentThread->Yield();
+    }
+    val = SharedVariable;
+    printf("Thread %d sees final value %d\n", which, val);
+}
+
+#else
+void
+SimpleThread(int which)
+{
+    int num;
+    
+    for (num = 0; num < 5; num++) {
+	printf("*** thread %d looped %d times\n", which, num);
+        currentThread->Yield();
+    }
+}
+
+#endif
 
 //----------------------------------------------------------------------
 // ThreadTest1
 // 	Set up a ping-pong between 'n' threads, by forking 'n' thread 
 //	to call SimpleThread. 
 //----------------------------------------------------------------------
-
+#if defined(HW1_SEMAPHORES)
 void
 ThreadTest1(int n)
 {
@@ -92,12 +132,25 @@ ThreadTest1(int n)
     SimpleThread(0);
 
 }
+#else
+
+void
+ThreadTest1()
+{
+    DEBUG('t', "Entering ThreadTest1");
+
+    Thread *t = new Thread("forked thread");
+
+    t->Fork(SimpleThread, 1);
+    SimpleThread(0);
+}
+#endif
 
 //----------------------------------------------------------------------
 // ThreadTest
 // 	Invoke a test routine.
 //----------------------------------------------------------------------
-
+#if defined(HW1_SEMAPHORES)
 void
 ThreadTest(int numOfThreads)
 {
@@ -110,4 +163,42 @@ ThreadTest(int numOfThreads)
 	break;
     }
 }
+
+#elif defined(HW1_LOCKS)
+
+void
+ThreadTest(int numOfThreads) {
+    DEBUG('t', "Entering SimpleTest");
+    Thread *t;
+    numThreadsActive = numOfThreads;
+    printf("NumthreadsActive = %d\n", numThreadsActive);
+
+    for(int i=1; i<numOfThreads; i++)
+    {
+        t = new Thread("forked thread");
+        t->Fork(SimpleThread,i);
+    }
+    if(numThreadsActive>0){
+    SimpleThread(0);
+    }
+}
+
+#else
+
+void
+ThreadTest(int numOfThreads)
+{
+    switch (testnum) {
+    case 1:
+	ThreadTest1();
+	break;
+    default:
+	printf("No test specified.\n");
+	break;
+    }
+}
+
+#endif
+
+
 
