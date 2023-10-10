@@ -15,6 +15,7 @@
 
 // testnum is set in main.cc
 int testnum = 1;
+int threadCounter=0;
 int numThreadsActive; // to stop post completion
 
 //----------------------------------------------------------------------
@@ -50,7 +51,7 @@ void SimpleThread(int which)
 		s.V();
 		currentThread->Yield();
     	}
-    	while(counter<SharedVariable*5)
+    	while(SharedVariable<threadCounter*5)
     	currentThread->Yield();
     	val = SharedVariable;
     	printf("Thread %d sees final value %d\n", which, val);
@@ -128,6 +129,7 @@ ThreadTest1(int n)
     for(int i=0; i <n; i++){
         Thread *t = new Thread("forked thread");
         t->Fork(SimpleThread, i+1);
+		threadCounter++;
     }
     SimpleThread(0);
 
