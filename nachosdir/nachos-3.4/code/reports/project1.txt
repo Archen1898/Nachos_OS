@@ -1,8 +1,5 @@
 Project 1 Report for Group 7
 
-Dillon Archer - 6224872
-Nagarjun Tumkur Sharathkumar - 6366321
-
 Exercise 1 - Dillon Archer 6224872
 
 For the first part of this exercise, I modified Threadtest1() to take n number of integers by 
@@ -29,6 +26,7 @@ Before the  implementation of random interrupts, this procedure correctly increm
 variable 'n*5' times.
 
 
+Nagarjun Tumkur Sharathkumar - 6366321
 
 Exercise 2 - Implementing Locks
 
