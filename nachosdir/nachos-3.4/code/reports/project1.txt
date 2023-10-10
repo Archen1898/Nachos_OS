@@ -1,8 +1,5 @@
 Project 1 Report for Group 7
 
-Dillon Archer - 6224872
-Nagarjun Tumkur Sharathkumar - 6366321
-
 Exercise 1 - Dillon Archer 6224872
 
 For the first part of this exercise, I modified Threadtest1() to take n number of integers by 
@@ -10,10 +7,26 @@ implementing a for loop. This allowed the function to fork 'n' number of Threads
 which call SimpleThread(). Next, I modified SimpleThread to share a variable called
 SharedVariable between all of the forked and original threads. Once the for loop within
 SimpleThread is completed, SharedVariable is stored within val and displayed using a printf statment
-to show what value each thread sees within the function call.
+to show what value each thread sees within the function call. 
+
+Before the implementation of the semaphores, when the for loop runs, each thread would overwrite
+the increment done by the previous thread on the global variable when it yields the processor 
+to the next thread. This resulted in a situation where in a case when there is 'n' 
+number of threads, the global variable would contain a value that is 'n/5'.
+
+After implementing the semaphores, the global variable is properly synchronized across all threads.
+First, the Semaphore value is incremented by one at the start of the ThreadTest1 function to indicate
+that the processor is available to be utilized by the threads. Then, as each thread runs its for loop,
+it acquires the processor by calling the Semaphore s.P() function. Once it is done updating the local, 
+variable, the thread releases the processor by incrementing the value of the semaphore. If a processor
+happens to acquire the processor before the semaphore is released, then the current thread is put
+to sleep by the semaphore before it is allowed to increment the global variable.  
+
+Before the  implementation of random interrupts, this procedure correctly increments the 
+variable 'n*5' times.
 
 
-
+Nagarjun Tumkur Sharathkumar - 6366321
 
 Exercise 2 - Implementing Locks
 
