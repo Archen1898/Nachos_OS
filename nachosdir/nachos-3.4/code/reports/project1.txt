@@ -1,5 +1,8 @@
 Project 1 Report for Group 7
 
+Dillon Archer - 6224872
+Nagarjun Tumkur Sharathkumar - 6366321
+
 Exercise 1 - Dillon Archer 6224872
 
 For the first part of this exercise, I modified Threadtest1() to take n number of integers by 
@@ -9,3 +12,30 @@ SharedVariable between all of the forked and original threads. Once the for loop
 SimpleThread is completed, SharedVariable is stored within val and displayed using a printf statment
 to show what value each thread sees within the function call.
 
+
+
+
+Exercise 2 - Implementing Locks
+
+We have implemented Locks to closely resemble the Semaphore implementation. The primary distinction
+is in the internal value it holds, which is always initialized to 1. This ensures that only 1
+thread can acquire the Lock at any given time. This Lock also keeps track of the thread that acquired
+it, and only that specific thread can release it. For testing purposes, we substituted
+Semaphores with Locks as in the same SimpleThread() function. The results remained same with the
+previous implementation. As in the Semaphore solution, the critical section is entered with an Acquire() 
+call and exited with a Release() call.
+
+Exercise 3 - Implementing Conditions
+
+The conditions are implemented in a similar way to semaphores and locks. However, a key difference
+is that conditions do not internally check a value during their function calls. Instead, they maintain
+the list of threads that are waiting on the condition. waiting here means the threads are
+placed in a blocked state using a sleep() call.
+
+The Wait() function is responsible for this action, under the assumption that the lock passed into it
+has been acquired by the calling thread. Before going to sleep, the thread releases the lock, allowing
+other threads to use it. Subsequently, when another thread executes a Signal() or Broadcast() function,
+a thread that was waiting on the condition will wake up and attempt to re-acquire the lock. The Signal()
+function awakens a single thread that is waiting on the condition, while the Broadcast() function awakens 
+all threads in the waiting state for that condition. It's essential to note that these functions can only 
+execute successfully if the calling thread has acquired the Lock passed to them.
