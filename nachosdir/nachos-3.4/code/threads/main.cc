@@ -59,10 +59,12 @@ extern int testnum;
 
 // External functions used by this file
 
+extern void SemaphorePing(void);
 extern void ThreadTest(int), Copy(char *unixFile, char *nachosFile);
 extern void Print(char *file), PerformanceTest(void);
 extern void StartProcess(char *file), ConsoleTest(char *in, char *out);
 extern void MailTest(int networkID);
+extern void Ping(void);
 
 //----------------------------------------------------------------------
 // main
@@ -101,7 +103,13 @@ main(int argc, char **argv)
       }
     }
 	
-    ThreadTest(2);
+    #ifndef HW1_CONDITION
+		ThreadTest(3);
+	#endif
+
+	#if defined(HW1_CONDITION)
+		Ping();
+	#endif
 #endif
 
     for (argc--, argv++; argc > 0; argc -= argCount, argv += argCount) {
