@@ -142,9 +142,12 @@ void ArrivingGoingFromTo(int atFloor, int toFloor) {
     //When an elevator request is made
     PersonThread person;
     ElevatorThread elevator;
-
+	
+	int firstDigit = atFloor;
+	int secondDigit = toFloor;
+	int thirdDigit = elevator.numPeopleIn;
     //First thing is that the requestor is assigned an unique id - composed of atFloor number, toFloor number, and numPeopleIn + 1
-    person.id = (atFloor*100) + (toFloor*10) + (elevator.numPeopleIn + 1);
+    person.id = (firstDigit*100) + (secondDigit*10) + (thirdDigit + 1);
     //Then the rest of the information is added to the struct
     person.atFloor = atFloor;
     person.toFloor = toFloor;
