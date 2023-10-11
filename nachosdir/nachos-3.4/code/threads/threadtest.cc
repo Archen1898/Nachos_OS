@@ -101,6 +101,142 @@ void SimpleThread(int which) {
     printf("Thread %d sees final value %d\n", which, val);
 }
 
+#elif defined(HW1_ELEVATOR)
+//Set up for the threads
+struct PersonThread {
+    int id;  //Each person is assigned a unique number
+    int atFloor; //Marks what floor they are currently at
+    int toFloor; //Marks what floor they want to go to
+};
+
+struct ElevatorThread {
+    int numFloors; //Marks the number of floors in building
+    int currentFloor; //Marks the current floor
+    int numPeopleIn; //Max 5 people in elevator at 1 time
+};
+
+void Elevator(int numFloors) {
+    //Starts up the elevator; there will always be at least 1 floor and the first floor is labeled 1
+    ElevatorThread elevator;
+    //Putting the number of floors into the struct so it can be accessed by the ArrivingGoingFromTo function
+    elevator.numFloors = numFloors;
+
+    //When the elevator is started, it should start on floor 1
+    elevator.currentFloor = 1;
+
+    //When the elevator is started, there should be no one inside of the elevator
+    elevator.numPeopleIn = 0;
+
+    //This is going to need a way to keep track of the number of people present in the elevator at a time -- counting semaphore to be used
+    //To use a semaphore to keep track of the number of people in the elevator and block off any requests when the elevator is full, the semaphore will be
+    //incremented 5 times to give it a value of 5. Each person that boards the elevator decrements the semaphore by 1 and each person that was on the elevator that gets off
+    //increments the semaphore by 1.
+    for (int i = 0; i < 5; i++) {
+        s.V();
+    }
+}
+
+void ArrivingGoingFromTo(int atFloor, int toFloor) {
+    //if Elevator was not called before, then this function wouldn't work because the elevator isn't working.
+    //As long as the counting semaphore has more than 0 as a value, then the elevator is active.
+    //When an elevator request is made
+    PersonThread person;
+    ElevatorThread elevator;
+
+    //First thing is that the requestor is assigned an unique id - composed of atFloor number, toFloor number, and numPeopleIn + 1
+    person.id = (atFloor*100) + (toFloor*10) + (elevator.numPeopleIn + 1);
+    //Then the rest of the information is added to the struct
+    person.atFloor = atFloor;
+    person.toFloor = toFloor;
+    //The first statement is printed
+    printf("Person %d wants to go to floor %d from floor %d.", person.id, person.atFloor, person.toFloor);
+
+    //For getting on the elevator
+    int floor_differenceA = 0;
+    while (elevator.currentFloor != person.atFloor) {
+        //If the elevator is not on the right floor, then the elevator has to travel to the nearest requestor in accordance to the
+        //direction that the earliest current requestor requested
+        if (elevator.currentFloor < person.atFloor) {
+            //Case of elevator being on the lower floor than earliest current requestor
+            floor_differenceA = person.atFloor - elevator.currentFloor;
+            for(int i = 0; i < floor_differenceA; i++) {
+                //Movement between each floor time -- 50 ticks
+                for (int aFloortime = 0; aFloortime < 50; aFloortime++) {
+                    //There doesn't need to be anything in here since we're mostly after the for loop activating each time the elevator moves between floors.
+                }
+                elevator.currentFloor++;
+                printf("Elevator arrives on floor %d.", elevator.currentFloor);
+                //Checks if there is someone waiting on this floor
+                currentThread->Yield();
+            }
+        }
+        else {
+            //Case of elevator being on the higher floor than earliest current requestor
+            floor_differenceA = elevator.currentFloor - person.atFloor;
+            for(int i = 0; i < floor_differenceA; i++) {
+                //Movement between each floor time -- 50 ticks
+                for (int aFloortime = 0; aFloortime < 50; aFloortime++) {
+                    //There doesn't need to be anything in here since we're mostly after the for loop activating each time the elevator moves between floors.
+                }
+                elevator.currentFloor--;
+                printf("Elevator arrives on floor %d.", elevator.currentFloor);
+                //Checks if there is someone waiting on this floor
+                currentThread->Yield();
+            }
+        }
+    }
+
+    //In the case where the elevator is on the right floor -- into elevator
+    if (elevator.currentFloor == person.atFloor) {
+        //Critical Section
+        s.P();
+        elevator.numPeopleIn++;
+        printf("Person %d got into the elevator.", person.id);
+    }
+
+    //For getting off of the elevator
+    int floor_differenceD = 0;
+    while (elevator.currentFloor != person.toFloor) {
+        //If the elevator is not on the right floor, it needs to take the passengers to the right floors.
+        if (elevator.currentFloor < person.toFloor) {
+            //The elevator needs to go up
+            floor_differenceD = person.toFloor - elevator.currentFloor;
+            for (int i = 0; i < floor_differenceD; i++) {
+                //Movement between each floor time -- 50 ticks
+                for (int aFloortime = 0; aFloortime < 50; aFloortime++) {
+                    //There doesn't need to be anything in here since we're mostly after the for loop activating each time the elevator moves between floors.
+                }
+                elevator.currentFloor++;
+                printf("Elevator arrives on floor %d.", elevator.currentFloor);
+                //Checks if there is someone waiting on this floor
+                currentThread->Yield();
+            }
+        }
+        else {
+            //The elevator needs to go down
+            floor_differenceD = elevator.currentFloor - person.toFloor;
+            for(int i = 0; i < floor_differenceD; i++) {
+                //Movement between each floor time -- 50 ticks
+                for (int aFloortime = 0; aFloortime < 50; aFloortime++) {
+                    //There doesn't need to be anything in here since we're mostly after the for loop activating each time the elevator moves between floors.
+                }
+                elevator.currentFloor--;
+                printf("Elevator arrives on floor %d.", elevator.currentFloor);
+                //Checks if there is someone waiting on this floor
+                currentThread->Yield();
+            }
+        }
+    }
+
+    //In the case where the elevator is on the right floor -- out of elevator
+    //The conditionals prevent numPeopleIn from becoming negative
+    if ((elevator.currentFloor == person.toFloor) && (elevator.numPeopleIn >= 1)) {
+        s.V();
+        elevator.numPeopleIn--;
+        printf("Person %d got out of the elevator.", person.id);
+    }
+}
+
 #else
 void
 SimpleThread(int which)
@@ -201,17 +337,3 @@ ThreadTest(int numOfThreads)
 }
 
 #endif
-
-
-
-// threadtest.cc 
-//	Simple test case for the threads assignment.
-//
-//	Create two threads, and have them context switch
-//	back and forth between themselves by calling Thread::Yield, 
-//	to illustratethe inner workings of the thread system.
-//
-// Copyright (c) 1992-1993 The Regents of the University of California.
-// All rights reserved.  See copyright.h for copyright notice and limitation 
-// of liability and disclaimer of warranty provisions.
-
