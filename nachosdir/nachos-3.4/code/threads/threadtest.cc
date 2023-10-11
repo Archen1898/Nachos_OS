@@ -15,7 +15,7 @@
 
 // testnum is set in main.cc
 int testnum = 1;
-int threadCounter=0;
+int threadCounter=1;
 int numThreadsActive; // to stop post completion
 
 //----------------------------------------------------------------------
@@ -51,7 +51,7 @@ void SimpleThread(int which)
 		s.V();
 		currentThread->Yield();
     	}
-    	while(SharedVariable<threadCounter*5)
+    	while(SharedVariable<(threadCounter*5))
     	currentThread->Yield();
     	val = SharedVariable;
     	printf("Thread %d sees final value %d\n", which, val);
