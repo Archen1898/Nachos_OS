@@ -22,9 +22,6 @@ variable, the thread releases the processor by incrementing the value of the sem
 happens to acquire the processor before the semaphore is released, then the current thread is put
 to sleep by the semaphore before it is allowed to increment the global variable.  
 
-Before the  implementation of random interrupts, this procedure correctly increments the 
-variable 'n*5' times.
-
 
 Nagarjun Tumkur Sharathkumar - 6366321
 
@@ -68,13 +65,14 @@ I could not justify awakening the elevator function within this function with aw
 Elevator function specifically called for a parameter that ArrivingGoingFromTo doesn't have. Going off
 of what I understand about semaphores, as long as the counting semaphore has more than 0 as it's value, then the elevator
 function is active. 
-To generate the id, I originally thought about using a random number generator but decided not to on the account of possible
-non thread safe issues. Instead, I decided to use a mix of number relevant to the elevator requestor in combination
+To generate the ID, I originally thought about using a random number generator but decided not to on account of possible
+non-thread-safe issues. Instead, I decided to use a mix of numbers relevant to the elevator requestor in combination
 with information that I have from the structs to create the numbers.
-When it came to the more active elevator call segment, I needed to essentially loop checking floors for incoming request.
+When it came to the more active elevator call segment, I needed to essentially loop-checking floors for incoming request.
 While I originally started with the correct floor where the elevator is above the while loops, I shifted it to under the while loops because
 it works better that way for the purposes of this project. 
 During the loops, I had to keep on checking whether there were more threads being generated so every floor, the thread would attempt to yield to 
 a request that is on the nearest floor, mostly due to how I use the floor difference variables. The smaller the floor difference, the faster a thread 
 would reach the yield command.
 There was only 1 main critical section in this code, where the people boarded the elevator.
+There was an issue getting the implementation to work correctly in that the counting semaphore implementation did not work successfully.
