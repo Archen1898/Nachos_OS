@@ -65,6 +65,8 @@ extern void Print(char *file), PerformanceTest(void);
 extern void StartProcess(char *file), ConsoleTest(char *in, char *out);
 extern void MailTest(int networkID);
 extern void Ping(void);
+extern void Elevator(int numFloor);
+extern void ArrivingGoingFromTo(int atFloor, int toFloor); 
 
 //----------------------------------------------------------------------
 // main

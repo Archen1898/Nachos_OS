@@ -30,8 +30,6 @@ Nagarjun Tumkur Sharathkumar - 6366321
 
 Exercise 2 - Implementing Locks
 
-in threads/makefile: DEFINES = -DTHREADS -DHW1_LOCKS
-
 We have implemented Locks to closely resemble the Semaphore implementation. The primary distinction
 is in the internal value it holds, which is always initialized to 1. This ensures that only 1
 thread can acquire the Lock at any given time. This Lock also keeps track of the thread that acquired
@@ -41,8 +39,6 @@ previous implementation. As in the Semaphore solution, the critical section is e
 call and exited with a Release() call.
 
 Exercise 3 - Implementing Conditions
-
-in threads/makefile: DEFINES = -DTHREADS -DHW1_CONDITION -DHW1_LOCKS
 
 The conditions are implemented in a similar way to semaphores and locks. However, a key difference
 is that conditions do not internally check a value during their function calls. Instead, they maintain
