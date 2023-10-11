@@ -238,6 +238,16 @@ void ArrivingGoingFromTo(int atFloor, int toFloor) {
         elevator.numPeopleIn--;
         printf("Person %d got out of the elevator.", person.id);
     }
+
+	SimpleThread(int which)
+	{
+    int num;
+    
+    for (num = 0; num < 5; num++) {
+	printf("*** thread %d looped %d times\n", which, num);
+        currentThread->Yield();
+    }
+	}
 }
 
 #else
