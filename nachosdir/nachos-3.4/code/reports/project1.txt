@@ -52,3 +52,29 @@ a thread that was waiting on the condition will wake up and attempt to re-acquir
 function awakens a single thread that is waiting on the condition, while the Broadcast() function awakens 
 all threads in the waiting state for that condition. It's essential to note that these functions can only 
 execute successfully if the calling thread has acquired the Lock passed to them.
+
+Exercise 4 - Anne Nguyen 5643071
+
+For this part of the exercise, I implemented the Elevator and ArrivingGoingFromTo functions. 
+I chose to use semaphores to maintain the synchronization of the threads.
+There were several points in which I believe that I started overthinking the project. In the end, 
+I first implemented the two structures to store the data that is needed for the functions to run.
+Then I started with the simpler function Elevator as it would only be called once. There, I 
+specifically made a loop to awaken the semaphore 5 times so it could be used to track the
+max number of people who could fit in the elevator at once. Using that method, it would also naturally 
+block any more requests from boarding the elevator until the semaphore has released at least 1 more count.
+The harder part was the implementation of the ArrivingGoingFromTo function. 
+I could not justify awakening the elevator function within this function with awakening the semaphore because the
+Elevator function specifically called for a parameter that ArrivingGoingFromTo doesn't have. Going off
+of what I understand about semaphores, as long as the counting semaphore has more than 0 as it's value, then the elevator
+function is active. 
+To generate the id, I originally thought about using a random number generator but decided not to on the account of possible
+non thread safe issues. Instead, I decided to use a mix of number relevant to the elevator requestor in combination
+with information that I have from the structs to create the numbers.
+When it came to the more active elevator call segment, I needed to essentially loop checking floors for incoming request.
+While I originally started with the correct floor where the elevator is above the while loops, I shifted it to under the while loops because
+it works better that way for the purposes of this project. 
+During the loops, I had to keep on checking whether there were more threads being generated so every floor, the thread would attempt to yield to 
+a request that is on the nearest floor, mostly due to how I use the floor difference variables. The smaller the floor difference, the faster a thread 
+would reach the yield command.
+There was only 1 main critical section in this code, where the people boarded the elevator.

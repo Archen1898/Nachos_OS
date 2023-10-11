@@ -110,6 +110,19 @@ main(int argc, char **argv)
 	#if defined(HW1_CONDITION)
 		Ping();
 	#endif
+
+	#ifndef HW1_CONDITION
+		ThreadTest(3);
+	#endif
+
+	#if defined(HW1_CONDITION)
+		Ping();
+	#endif
+
+	#if defined(HW1_ELEVATOR)
+    	Elevator(4);
+    	ArrivingGoingFromTo(1,4);
+	#endif
 #endif
 
     for (argc--, argv++; argc > 0; argc -= argCount, argv += argCount) {
