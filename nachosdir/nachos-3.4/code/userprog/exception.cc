@@ -24,6 +24,7 @@
 #include "copyright.h"
 #include "system.h"
 #include "syscall.h"
+#include "addrspace.h"
 
 //----------------------------------------------------------------------
 // ExceptionHandler
@@ -64,9 +65,20 @@ ExceptionHandler(ExceptionType which)
             interrupt->Halt();
             break;
         case SC_Fork:
+        {
             // TODO
+            unsigned int oldRegisters[NumTotalRegs] = { 0 };
+            memcpy(oldRegisters, machine->registers, sizeof(oldRegisters));
             
+            //Create the new AddrSpace and copies the old AddrSpace to new
+            AddrSpace *newAddrSpace = new AddrSpace(*currentThread->space);
+
+            //Create new Thread and associate new AddrSpace to new Thread
+            Thread *newThread = new Thread("forked");
+            newThread->space = newAddrSpace;
+
             break;
+        }
         case SC_Yield:
             // TODO
             break;
@@ -78,6 +90,8 @@ ExceptionHandler(ExceptionType which)
             break;
         case SC_Exit:
             // TODO
+            break;
+        default:
             break;
     }
 }
