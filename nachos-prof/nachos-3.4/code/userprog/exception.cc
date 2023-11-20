@@ -154,7 +154,7 @@ int doExec(char* filename) {
         printf("Unable to open file %s\n", filename);
         return -1;
     }
-
+    
     // 2. Delete current address space but store current PCB first if using in Step 5.
     PCB* pcb = currentThread->space->pcb;
     delete currentThread->space;
@@ -183,6 +183,7 @@ int doExec(char* filename) {
     // 9. Initialize the page table
     space->RestoreState();		// load page table register
 
+    printf("Current Thread [%d] successfully invoked Exec System Call.\n", currentThread->space->pcb->pid);
     // 10. Run the machine now that all is set up
     machine->Run();			// jump to the user progam
     ASSERT(FALSE); // Execution nevere reaches here
