@@ -147,44 +147,46 @@ int doExec(char* filename) {
     // Use progtest.cc:StartProcess() as a guide
 
     // 1. Open the file and check validity
-    // OpenFile *executable = fileSystem->Open(filename);
-    // AddrSpace *space;
+    OpenFile *executable = fileSystem->Open(filename);
+    AddrSpace *space;
 
-    // if (executable == NULL) {
-    //     printf("Unable to open file %s\n", filename);
-    //     return -1;
-    // }
+    if (executable == NULL) {
+        printf("Unable to open file %s\n", filename);
+        return -1;
+    }
 
     // 2. Delete current address space but store current PCB first if using in Step 5.
-    // PCB* pcb = currentThread->space->pcb;
-    // delete currentThread->space;
+    PCB* pcb = currentThread->space->pcb;
+    delete currentThread->space;
 
     // 3. Create new address space
-    // space = new AddrSpace(executable);
+    space = new AddrSpace(executable);
 
     // 4.     delete executable;			// close file
+    delete executable;
 
     // 5. Check if Addrspace creation was successful
-    // if(space->valid != true) {
-    // printf("Could not create AddrSpace\n");
-    //     return -1;
-    // }
+    if(space->valid != true) {
+    printf("Could not create AddrSpace\n");
+        return -1;
+    }
 
     // 6. Set the PCB for the new addrspace - reused from deleted address space
-    // space->pcb = pcb;
+    space->pcb = pcb;
 
     // 7. Set the addrspace for currentThread
-    // currentThread->space = space;
+    currentThread->space = space;
 
     // 8. Initialize registers for new addrspace
-    //  space->InitRegisters();		// set the initial register values
+    space->InitRegisters();		// set the initial register values
 
     // 9. Initialize the page table
-    // space->RestoreState();		// load page table register
+    space->RestoreState();		// load page table register
 
     // 10. Run the machine now that all is set up
-    // machine->Run();			// jump to the user progam
-    // ASSERT(FALSE); // Execution nevere reaches here
+    machine->Run();			// jump to the user progam
+    ASSERT(FALSE); // Execution nevere reaches here
+
 
     return 0;
 }
