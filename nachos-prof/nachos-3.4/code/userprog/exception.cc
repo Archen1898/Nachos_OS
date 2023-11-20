@@ -52,10 +52,10 @@
 
 void doExit(int status) {
 
-    int pid = 99;
+    //int pid = 99;
 
-    printf("System Call: [%d] invoked [Exit]\n", pid);
-    printf ("Process [%d] exits with [%d]\n", pid, status);
+    printf("System Call: [%d] invoked [Exit]\n", currentThread->space->pcb->pid);
+    printf ("Process [%d] exits with [%d]\n", currentThread->space->pcb->pid, status);
 
 
     currentThread->space->pcb->exitStatus = status;
@@ -183,7 +183,7 @@ int doExec(char* filename) {
     // 9. Initialize the page table
     space->RestoreState();		// load page table register
 
-    printf("Current Thread [%d] successfully invoked Exec System Call.\n", currentThread->space->pcb->pid);
+    printf("System Call: [%d] invoked [Exec]\n", currentThread->space->pcb->pid);
     // 10. Run the machine now that all is set up
     machine->Run();			// jump to the user progam
     ASSERT(FALSE); // Execution nevere reaches here
