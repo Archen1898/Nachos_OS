@@ -241,6 +241,7 @@ AddrSpace::InitRegisters()
 //
 //	For now, nothing!
 //  This is an attempt to save the machine state.
+//  It's like the reverse of RestoreState().
 //----------------------------------------------------------------------
 
 void AddrSpace::SaveState()

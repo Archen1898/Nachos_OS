@@ -124,6 +124,13 @@ int doFork(int functionAddr) {
 
     unsigned int oldRegisters[NumTotalRegs] = { 0 };
 
+    if (currentThread->space->GetNumPages() <= mm->GetFreePageCount()) {
+        //do nothing but continue with fork
+    }
+    else {
+        return -1;
+    }
+
     // 2. SaveUserState for the parent thread
     // currentThread->SaveUserState();
     memcpy(oldRegisters, machine->registers, sizeof(oldRegisters));
@@ -145,17 +152,15 @@ int doFork(int functionAddr) {
     Thread *newThread = new Thread("childThreadForked");
     newThread->space = newAddrSpace;
 
-
     // 5. Create a PCB for the child and connect it all up
     // pcb: pcbManager->AllocatePCB();
     PCB *pcb = pcbManager->AllocatePCB();
     // pcb->thread = childThread
     pcb->thread = newThread;
     // set parent for child pcb
-    pcb->parent = *currentThread->space;
+    pcb->parent = oldAddrSpace->pcb;
     // add child for parent pcb
-    PCB* pcbparent = currentThread->space->pcb;
-    pcbparent->AddChild(pcb);
+    oldAddrSpace->pcb->AddChild(pcb);
 
     // 6. Set up machine registers for child and save it to child thread
     // PCReg: functionAddr
