@@ -26,6 +26,8 @@ class AddrSpace {
 					// stored in the file "executable"
     AddrSpace(AddrSpace* space); // Create an address space,
           // which is a copy of an existing one
+    AddrSpace(AddrSpace *old);
+    //Copy constructor for AddrSpace
     ~AddrSpace();			// De-allocate an address space
 
     void InitRegisters();		// Initialize user-level CPU registers,
