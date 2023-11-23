@@ -72,6 +72,10 @@ void doExit(int status) {
 
     // Manage PCB memory As a child process
     if(pcb->parent == NULL) pcbManager->DeallocatePCB(pcb);
+    else {
+        pcb->parent->RemoveChild(pcb);
+        pcb->exitStatus = pcb->parent->exitStatus;
+    }
 
     // Delete address space only after use is completed
     delete currentThread->space;
@@ -163,13 +167,13 @@ int doFork(int functionAddr) {
     // childThread->SaveUserState();
     newThread->SaveUserState();
 
-    // 7. Restore register state of parent user-level process
-    // currentThread->RestoreUserState()
-    currentThread->RestoreUserState();
-
-    // 8. Call thread->fork on Child
+    // 7. Call thread->fork on Child
     // childThread->Fork(childFunction, pcb->pid)
     newThread->Fork(childFunction, pcb->pid);
+
+    // 8. Restore register state of parent user-level process
+    // currentThread->RestoreUserState()
+    currentThread->RestoreUserState();
 
     // 9. return pcb->pid;
     return pcb->pid;
