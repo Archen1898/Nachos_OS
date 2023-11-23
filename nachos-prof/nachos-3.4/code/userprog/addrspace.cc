@@ -19,6 +19,7 @@
 #include "system.h"
 #include "addrspace.h"
 #include "noff.h"
+#include "translate.h"
 #ifdef HOST_SPARC
 #include <strings.h>
 #endif
@@ -239,10 +240,14 @@ AddrSpace::InitRegisters()
 //	to this address space, that needs saving.
 //
 //	For now, nothing!
+//  This is an attempt to save the machine state.
 //----------------------------------------------------------------------
 
 void AddrSpace::SaveState()
-{}
+{
+    pageTable =  machine->pageTable;
+    numPages =  machine->pageTableSize;
+}
 
 //----------------------------------------------------------------------
 // AddrSpace::RestoreState
@@ -266,4 +271,18 @@ unsigned int AddrSpace::Translate(unsigned int virtualAddr) {
         unsigned int frameNumber = pageTable[pageNumber].physicalPage;
         int physicalAddr = frameNumber*PageSize + pageOffset;
         return physicalAddr;
+}
+
+//----------------------------------------------------------------------
+// AddrSpace::AddrSpace(AddrSpace &old)
+// 	Copy constructor for AddrSpace
+//  This is so that an old AddrSpace can be copied over to a new
+//  AddrSpace.
+//----------------------------------------------------------------------
+
+AddrSpace::AddrSpace(AddrSpace &old) {
+    numPages = old.numPages;
+    pageTable = new TranslationEntry[numPages];
+    // memcpy(dest, src, numberOfBytes)
+    memcpy(pageTable, old.pageTable, sizeof(TranslationEntry) * numPages);
 }
