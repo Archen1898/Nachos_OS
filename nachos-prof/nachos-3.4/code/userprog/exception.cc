@@ -99,31 +99,28 @@ void incrementPC() {
 void childFunction(int pid) {
 
     // 1. Restore the state of registers
-    // currentThread->RestoreUserState()
     currentThread->RestoreUserState();
 
     // 2. Restore the page table for child
-    // currentThread->space->RestoreState()
     currentThread->space->RestoreState();
 
-    // PCReg == machine->ReadRegister(PCReg)
+    //Check if PCReg is equal to machine->ReadRegister(PCReg)
     // print message for child creation (pid,  PCReg, currentThread->space->GetNumPages())
     if (PCReg == machine->ReadRegister(PCReg)) {
-        printf("Child Created: PID:[%d], PCReg:[%d], Number of Pages of Current Thread:[%d]", pid, PCReg, currentThread->space->GetNumPages());
+        printf("Child Created: PID:[%d], PCReg:[%d], Number of Pages of Current Thread:[%d]\n", pid, PCReg, currentThread->space->GetNumPages());
     }
 
-    // machine->Run();
+    //Tells the machine to run
     machine->Run();
 
 }
 
 int doFork(int functionAddr) {
+    //Output print when fork is called
+    printf("System Call: [%d] invoked [Fork]\n", currentThread->space->pcb->pid);
+
     // 1. Check if sufficient memory exists to create new process
-    // currentThread->space->GetNumPages() <= mm->GetFreePageCount()
     // if check fails, return -1
-
-    unsigned int oldRegisters[NumTotalRegs] = { 0 };
-
     if (currentThread->space->GetNumPages() <= mm->GetFreePageCount()) {
         //do nothing but continue with fork
     }
@@ -131,58 +128,45 @@ int doFork(int functionAddr) {
         return -1;
     }
 
-    // 2. SaveUserState for the parent thread
-    // currentThread->SaveUserState();
+    //This makes sure that there is enough memory to create a new process
+    unsigned int oldRegisters[NumTotalRegs] = { 0 };
     memcpy(oldRegisters, machine->registers, sizeof(oldRegisters));
+
+    // 2. SaveUserState for the parent thread
     AddrSpace *oldAddrSpace = currentThread->space;
     oldAddrSpace->SaveState();
+    currentThread->SaveUserState();
 
     // 3. Create a new address space for child by copying parent address space
-    // Parent: currentThread->space
-    // childAddrSpace: new AddrSpace(currentThread->space)
-
-    //Create the new AddrSpace and copies the old AddrSpace to new
     AddrSpace *newAddrSpace = new AddrSpace(currentThread->space);
 
     // 4. Create a new thread for the child and set its addrSpace
-    // childThread = new Thread("childThread")
-    // child->space = childAddSpace;
-
-    //Create new Thread and associate new AddrSpace to new Thread
     Thread *newThread = new Thread("childThreadForked");
     newThread->space = newAddrSpace;
 
-    // 5. Create a PCB for the child and connect it all up
-    // pcb: pcbManager->AllocatePCB();
+    // 5. Create a PCB for the child and set it up with needed information
+    //such as thread, parent, and child
     PCB *pcb = pcbManager->AllocatePCB();
-    // pcb->thread = childThread
     pcb->thread = newThread;
-    // set parent for child pcb
     pcb->parent = oldAddrSpace->pcb;
-    // add child for parent pcb
     oldAddrSpace->pcb->AddChild(pcb);
 
     // 6. Set up machine registers for child and save it to child thread
-    // PCReg: functionAddr
     machine->WriteRegister(PCReg, functionAddr);
-    // PrevPCReg: functionAddr-4
     machine->WriteRegister(PCReg, functionAddr-4);
-    // NextPCReg: functionAddr+4
     machine->WriteRegister(PCReg, functionAddr+4);
-    // childThread->SaveUserState();
+    //Save the state of the thread
     newThread->SaveUserState();
 
     // 7. Call thread->fork on Child
-    // childThread->Fork(childFunction, pcb->pid)
     newThread->Fork(childFunction, pcb->pid);
+    //Output print when process is forked
+    printf("Process [%d] Fork: start at address [%d] with [%d] pages memory\n", currentThread->space->pcb->pid, functionAddr, newThread->space->GetNumPages());
 
     // 8. Restore register state of parent user-level process
-    // currentThread->RestoreUserState()
     currentThread->RestoreUserState();
 
-    // 9. return pcb->pid;
     return pcb->pid;
-
 }
 
 int doExec(char* filename) {
