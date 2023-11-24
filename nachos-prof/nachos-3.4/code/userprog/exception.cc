@@ -71,7 +71,7 @@ void doExit(int status) {
     pcb->DeleteExitedChildrenSetParentNull();
 
     // Manage PCB memory As a child process
-    if(pcb->parent == NULL) pcbManager->DeallocatePCB(pcb);
+    if (pcb->parent == NULL) {pcbManager->DeallocatePCB(pcb);}
     else {
         pcb->parent->RemoveChild(pcb);
         pcb->exitStatus = pcb->parent->exitStatus;
@@ -134,7 +134,7 @@ int doFork(int functionAddr) {
     // 2. SaveUserState for the parent thread
     // currentThread->SaveUserState();
     memcpy(oldRegisters, machine->registers, sizeof(oldRegisters));
-    AddrSpace *oldAddrSpace = *currentThread->space;
+    AddrSpace *oldAddrSpace = currentThread->space;
     oldAddrSpace->SaveState();
 
     // 3. Create a new address space for child by copying parent address space
@@ -142,7 +142,7 @@ int doFork(int functionAddr) {
     // childAddrSpace: new AddrSpace(currentThread->space)
 
     //Create the new AddrSpace and copies the old AddrSpace to new
-    AddrSpace *newAddrSpace = new AddrSpace(*currentThread->space);
+    AddrSpace *newAddrSpace = new AddrSpace(currentThread->space);
 
     // 4. Create a new thread for the child and set its addrSpace
     // childThread = new Thread("childThread")
@@ -164,11 +164,11 @@ int doFork(int functionAddr) {
 
     // 6. Set up machine registers for child and save it to child thread
     // PCReg: functionAddr
-    machine->WriteRegister(PCReg, newAddrSpace);
+    machine->WriteRegister(PCReg, functionAddr);
     // PrevPCReg: functionAddr-4
-    machine->WriteRegister(PCReg, newAddrSpace-4);
+    machine->WriteRegister(PCReg, functionAddr-4);
     // NextPCReg: functionAddr+4
-    machine->WriteRegister(PCReg, newAddrSpace+4);
+    machine->WriteRegister(PCReg, functionAddr+4);
     // childThread->SaveUserState();
     newThread->SaveUserState();
 
