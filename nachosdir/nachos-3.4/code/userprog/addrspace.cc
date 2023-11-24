@@ -184,3 +184,17 @@ void AddrSpace::RestoreState()
     machine->pageTable = pageTable;
     machine->pageTableSize = numPages;
 }
+
+//----------------------------------------------------------------------
+// AddrSpace::AddrSpace(AddrSpace &old)
+// 	Copy constructor for AddrSpace
+//  This is so that an old AddrSpace can be copied over to a new
+//  AddrSpace.    
+//----------------------------------------------------------------------
+
+AddrSpace::AddrSpace(AddrSpace &old) {
+    numPages = old.numPages;
+    pageTable = new TranslationEntry[numPages];
+    // memcpy(dest, src, numberOfBytes)
+    memcpy(pageTable, old.pageTable, sizeof(TranslationEntry) * numPages);
+}

@@ -1,4 +1,5 @@
 #include "pcb.h"
+#include "synch.h"
 
 
 PCB::PCB(int id) {
