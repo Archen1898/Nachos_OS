@@ -65,19 +65,25 @@ void doExit(int status) {
     currentThread->space->pcb->exitStatus = status;
 
     // Manage PCB memory As a parent process
-    PCB* pcb = currentThread->space->pcb;
+    PCB *pcb = currentThread->space->pcb;
 
     // Delete exited children and set parent null for non-exited ones
     pcb->DeleteExitedChildrenSetParentNull();
 
     // Manage PCB memory As a child process
-    if (pcb->parent == NULL) {
-        pcbManager->DeallocatePCB(pcb);
-    }
-    else {
+    if ((pcb->parent) != NULL) {
         pcb->parent->RemoveChild(pcb);
         pcb->exitStatus = pcb->parent->exitStatus;
+
     }
+    else {
+       pcbManager->DeallocatePCB(pcb);
+    }
+
+    //Remove current process from the pcb manager and pid manager
+    pcbManager->DeallocatePCB(currentThread->space->pcb);
+
+
 
     // Delete address space only after use is completed
     delete currentThread->space;

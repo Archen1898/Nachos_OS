@@ -44,8 +44,8 @@ bool PCB::HasExited() {
 
 void decspn(int arg) {
     PCB* pcb = (PCB*)arg;
-    if (pcb->HasExited()) pcbManager->DeallocatePCB(pcb);
-    else pcb->parent = NULL;
+    if (pcb->HasExited()) {pcbManager->DeallocatePCB(pcb);}
+    else {pcb->parent = NULL;}
 }
 
 
