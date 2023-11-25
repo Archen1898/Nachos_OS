@@ -97,7 +97,6 @@ void incrementPC() {
 
 
 void childFunction(int pid) {
-
     // 1. Restore the state of registers
     currentThread->RestoreUserState();
 
@@ -170,7 +169,6 @@ int doFork(int functionAddr) {
 }
 
 int doExec(char* filename) {
-
     // Use progtest.cc:StartProcess() as a guide
 
     // 1. Open the file and check validity

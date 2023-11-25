@@ -20,6 +20,7 @@
 #include "addrspace.h"
 #include "noff.h"
 #include "translate.h"
+#include "machine.h"
 #ifdef HOST_SPARC
 #include <strings.h>
 #endif

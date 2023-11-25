@@ -1,5 +1,5 @@
 
-
+#include "synch.h"
 #include "memorymanager.h"
 #include "machine.h"
 
