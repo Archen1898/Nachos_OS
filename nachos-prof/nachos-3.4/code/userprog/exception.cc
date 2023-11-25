@@ -58,8 +58,8 @@ void doExit(int status) {
 
     //int pid = 99;
 
-    printf("System Call: [%d] invoked [Exit]\n", currentThread->space->pcb->pid);
-    printf ("Process [%d] exits with [%d]\n", currentThread->space->pcb->pid, status);
+    DEBUG('d',"System Call: [%d] invoked [Exit]\n", currentThread->space->pcb->pid);
+    DEBUG('d',"Process [%d] exits with [%d]\n", currentThread->space->pcb->pid, status);
 
 
     currentThread->space->pcb->exitStatus = status;
@@ -112,7 +112,7 @@ void childFunction(int pid) {
 
 int doFork(int functionAddr) {
     //Output print when fork is called
-    printf("System Call: [%d] invoked [Fork]\n", currentThread->space->pcb->pid);
+    DEBUG('d',"System Call: [%d] invoked [Fork]\n", currentThread->space->pcb->pid);
 
     // 1. Check if sufficient memory exists to create new process
     // if check fails, return -1
@@ -155,7 +155,7 @@ int doFork(int functionAddr) {
     // 8. Call thread->fork on Child
     newThread->Fork(*childFunction, pcb->pid);
     //Output print when process is forked
-    printf("Process [%d] Fork: start at address [%d] with [%d] pages memory\n", currentThread->space->pcb->pid, functionAddr, newThread->space->GetNumPages());
+    DEBUG('d',"Process [%d] Fork: start at address [%d] with [%d] pages memory\n", currentThread->space->pcb->pid, functionAddr, newThread->space->GetNumPages());
 
     // 9. return statement due to doFork being an int
     return pcb->pid;
