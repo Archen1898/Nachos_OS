@@ -138,6 +138,7 @@ int doFork(int functionAddr) {
     PCB *pcb = pcbManager->AllocatePCB();
     pcb->thread = newThread;
     pcb->parent = currentThread->space->pcb;
+    newThread->space->pcb = pcb;
     currentThread->space->pcb->AddChild(pcb);
 
     // 6. Set up machine registers for child and save it to child thread
