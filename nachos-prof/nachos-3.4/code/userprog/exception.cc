@@ -129,12 +129,12 @@ int doFork(int functionAddr) {
     }
 
     //This makes sure that there is enough memory to create a new process
-    unsigned int oldRegisters[NumTotalRegs] = { 0 };
-    memcpy(oldRegisters, machine->registers, sizeof(oldRegisters));
+    //unsigned int oldRegisters[NumTotalRegs] = { 0 };
+    //memcpy(oldRegisters, machine->registers, sizeof(oldRegisters));
 
     // 2. SaveUserState for the parent thread
     AddrSpace *oldAddrSpace = currentThread->space;
-    oldAddrSpace->SaveState();
+    //oldAddrSpace->SaveState();
     currentThread->SaveUserState();
 
     // 3. Create a new address space for child by copying parent address space
@@ -225,7 +225,7 @@ int doJoin(int pid) {
     // 1. Check if this is a valid pid and return -1 if not
     PCB* joinPCB = pcbManager->GetPCB(pid);
     if (joinPCB == NULL) return -1;
-    
+
     printf("System Call: [%d] invoked [Join]\n", currentThread->space->pcb->pid);
 
     // 2. Check if pid is a child of current process
