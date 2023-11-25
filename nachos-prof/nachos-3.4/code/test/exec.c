@@ -7,7 +7,7 @@ void useMemory(){
 int main(){
 	int i;
 	for(i =0; i< 5; i++){
-		//Fork(useMemory);
+		Fork(useMemory);
 		useMemory();
 		Yield();
 	}
