@@ -65,17 +65,25 @@ void doExit(int status) {
     currentThread->space->pcb->exitStatus = status;
 
     // Manage PCB memory As a parent process
-    PCB* pcb = currentThread->space->pcb;
+    PCB *pcb = currentThread->space->pcb;
 
     // Delete exited children and set parent null for non-exited ones
     pcb->DeleteExitedChildrenSetParentNull();
 
     // Manage PCB memory As a child process
-    if (pcb->parent == NULL) {pcbManager->DeallocatePCB(pcb);}
-    else {
+    if ((pcb->parent) != NULL) {
         pcb->parent->RemoveChild(pcb);
         pcb->exitStatus = pcb->parent->exitStatus;
+
     }
+    else {
+       pcbManager->DeallocatePCB(pcb);
+    }
+
+    //Remove current process from the pcb manager and pid manager
+    pcbManager->DeallocatePCB(currentThread->space->pcb);
+
+
 
     // Delete address space only after use is completed
     delete currentThread->space;
@@ -105,7 +113,7 @@ void childFunction(int pid) {
 
     //Check if PCReg is equal to machine->ReadRegister(PCReg)
     // print message for child creation (pid,  PCReg, currentThread->space->GetNumPages())
-    if (PCReg == machine->ReadRegister(PCReg)) {
+    if ((PCReg) == (machine->ReadRegister(PCReg))) {
         printf("Child Created: PID:[%d], PCReg:[%d], Number of Pages of Current Thread:[%d]\n", pid, PCReg, currentThread->space->GetNumPages());
     }
 
@@ -120,7 +128,7 @@ int doFork(int functionAddr) {
 
     // 1. Check if sufficient memory exists to create new process
     // if check fails, return -1
-    if (currentThread->space->GetNumPages() <= mm->GetFreePageCount()) {
+    if ((currentThread->space->GetNumPages()) <= (mm->GetFreePageCount())) {
         //do nothing but continue with fork
     }
     else {
@@ -137,7 +145,7 @@ int doFork(int functionAddr) {
     currentThread->SaveUserState();
 
     // 3. Create a new address space for child by copying parent address space
-    AddrSpace *newAddrSpace = new AddrSpace(currentThread->space);
+    AddrSpace *newAddrSpace = new AddrSpace(oldAddrSpace);
 
     // 4. Create a new thread for the child and set its addrSpace
     Thread *newThread = new Thread("childThreadForked");
@@ -152,8 +160,9 @@ int doFork(int functionAddr) {
 
     // 6. Set up machine registers for child and save it to child thread
     machine->WriteRegister(PCReg, functionAddr);
-    machine->WriteRegister(PCReg, functionAddr-4);
-    machine->WriteRegister(PCReg, functionAddr+4);
+    machine->WriteRegister(PrevPCReg, functionAddr-4);
+    machine->WriteRegister(NextPCReg, functionAddr+4);
+
     //Save the state of the thread
     newThread->SaveUserState();
 
