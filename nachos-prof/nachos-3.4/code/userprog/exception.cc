@@ -220,7 +220,7 @@ int doExec(char* filename) {
     printf("System Call: [%d] invoked [Exec]\n", currentThread->space->pcb->pid);
     // 10. Run the machine now that all is set up
     machine->Run();			// jump to the user progam
-    ASSERT(FALSE); // Execution nevere reaches here
+    ASSERT(FALSE); // Execution never reaches here
 
 
     return 0;
