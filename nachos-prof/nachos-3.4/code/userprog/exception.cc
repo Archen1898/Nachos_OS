@@ -155,7 +155,7 @@ int doFork(int functionAddr) {
     // 8. Call thread->fork on Child
     newThread->Fork(*childFunction, pcb->pid);
     //Output print when process is forked
-    DEBUG('d',"Process [%d] Fork: start at address [%d] with [%d] pages memory\n", currentThread->space->pcb->pid, functionAddr, newThread->space->GetNumPages());
+    DEBUG('d',"Process [%d] Fork: start at address [%p] with [%d] pages memory\n", currentThread->space->pcb->pid, newThread->space, newThread->space->GetNumPages());
 
     // 9. return statement due to doFork being an int
     return pcb->pid;
