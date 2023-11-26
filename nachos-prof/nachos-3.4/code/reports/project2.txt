@@ -25,8 +25,34 @@ the child process and then as a way to create a new address space for the child.
 Tests are ran on the code by using the fork.c, located in the test folder of the
 code folder. Through the usage of the phrase "make fork" due to the Makefile
 having fork included, I was able to test the code through that method.
+
 I did originally make edits to doExit according to the instructions given in the
 implementation guide, however, as I tested the doExit by using the Fork.c test file
 since it does call Exit there, I found that there issues causing segmentation faults.
 To resolve those, I reverted the code of doExit to the original set up and
 it was able to run completely after that.
+
+
+Dillon Archer PID: 6224872
+
+My role for the project was the implementation of the Exec and
+Yield syscalls. Yield was relatively straightforward as it once
+as it simply used the yield function within thread.cc to transfer
+control of the CPU to another thread is user mode.
+
+For Exec, the execution of this syscall is similar to that of
+StartProcess in progtest.cc. First, a pointer to an OpenFile object was created
+and the filed that was called is stored within this pointer. Then, we check to 
+see if the pointer is null. If so, then the execution fails and we know the files
+doesn't exist that the specified location and the program exits. If not, 
+then the pcb from the currentThread is stored within a new pcb pointer and The
+address space of the current thread is deleted. A new address space is then created
+so that we can now run the specified user program. When this is done we now need to verify
+that the address space was created successfully. When we created the address space,
+there is a boolean variable called valid that is either set to true or false
+which indicates whether or not address space creation was successful. It can fail for a number
+of reasons such as if there aren't enough free pages available within our
+memory manager that we can assign to the new address space. If it is successful, then
+we initialize the registers and set the new pcb to be the old pcb from the previous thread
+address space that we deleted. Then we execute the user program
+
