@@ -58,32 +58,20 @@ void doExit(int status) {
 
     //int pid = 99;
 
-    printf("System Call: [%d] invoked [Exit]\n", currentThread->space->pcb->pid);
-    printf ("Process [%d] exits with [%d]\n", currentThread->space->pcb->pid, status);
+    DEBUG('d',"System Call: [%d] invoked [Exit]\n", currentThread->space->pcb->pid);
+    DEBUG('d',"Process [%d] exits with [%d]\n", currentThread->space->pcb->pid, status);
 
 
     currentThread->space->pcb->exitStatus = status;
 
     // Manage PCB memory As a parent process
-    PCB *pcb = currentThread->space->pcb;
+    PCB* pcb = currentThread->space->pcb;
 
     // Delete exited children and set parent null for non-exited ones
     pcb->DeleteExitedChildrenSetParentNull();
 
     // Manage PCB memory As a child process
-    if ((pcb->parent) != NULL) {
-        pcb->parent->RemoveChild(pcb);
-        pcb->exitStatus = pcb->parent->exitStatus;
-
-    }
-    else {
-       pcbManager->DeallocatePCB(pcb);
-    }
-
-    //Remove current process from the pcb manager and pid manager
-    pcbManager->DeallocatePCB(currentThread->space->pcb);
-
-
+    if(pcb->parent == NULL) pcbManager->DeallocatePCB(pcb);
 
     // Delete address space only after use is completed
     delete currentThread->space;
@@ -124,7 +112,7 @@ void childFunction(int pid) {
 
 int doFork(int functionAddr) {
     //Output print when fork is called
-    printf("System Call: [%d] invoked [Fork]\n", currentThread->space->pcb->pid);
+    DEBUG('d',"System Call: [%d] invoked [Fork]\n", currentThread->space->pcb->pid);
 
     // 1. Check if sufficient memory exists to create new process
     // if check fails, return -1
@@ -135,17 +123,11 @@ int doFork(int functionAddr) {
         return -1;
     }
 
-    //This makes sure that there is enough memory to create a new process
-    //unsigned int oldRegisters[NumTotalRegs] = { 0 };
-    //memcpy(oldRegisters, machine->registers, sizeof(oldRegisters));
-
     // 2. SaveUserState for the parent thread
-    AddrSpace *oldAddrSpace = currentThread->space;
-    //oldAddrSpace->SaveState();
     currentThread->SaveUserState();
 
     // 3. Create a new address space for child by copying parent address space
-    AddrSpace *newAddrSpace = new AddrSpace(oldAddrSpace);
+    AddrSpace *newAddrSpace = new AddrSpace(currentThread->space);
 
     // 4. Create a new thread for the child and set its addrSpace
     Thread *newThread = new Thread("childThreadForked");
@@ -155,8 +137,9 @@ int doFork(int functionAddr) {
     //such as thread, parent, and child
     PCB *pcb = pcbManager->AllocatePCB();
     pcb->thread = newThread;
-    pcb->parent = oldAddrSpace->pcb;
-    oldAddrSpace->pcb->AddChild(pcb);
+    pcb->parent = currentThread->space->pcb;
+    newThread->space->pcb = pcb;
+    currentThread->space->pcb->AddChild(pcb);
 
     // 6. Set up machine registers for child and save it to child thread
     machine->WriteRegister(PCReg, functionAddr);
@@ -166,14 +149,15 @@ int doFork(int functionAddr) {
     //Save the state of the thread
     newThread->SaveUserState();
 
-    // 7. Call thread->fork on Child
-    newThread->Fork(childFunction, pcb->pid);
-    //Output print when process is forked
-    printf("Process [%d] Fork: start at address [%d] with [%d] pages memory\n", currentThread->space->pcb->pid, functionAddr, newThread->space->GetNumPages());
-
-    // 8. Restore register state of parent user-level process
+    // 7. Restore register state of parent user-level process
     currentThread->RestoreUserState();
 
+    // 8. Call thread->fork on Child
+    newThread->Fork(*childFunction, pcb->pid);
+    //Output print when process is forked
+    DEBUG('d',"Process [%d] Fork: start at address [%d] with [%d] pages memory\n", currentThread->space->pcb->pid, functionAddr, newThread->space->GetNumPages());
+
+    // 9. return statement due to doFork being an int
     return pcb->pid;
 }
 
