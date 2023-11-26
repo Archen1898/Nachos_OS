@@ -21,6 +21,7 @@
 #include "noff.h"
 #include "translate.h"
 #include "machine.h"
+#include "memorymanager.h"
 #ifdef HOST_SPARC
 #include <strings.h>
 #endif
@@ -84,6 +85,7 @@ AddrSpace::AddrSpace(OpenFile *executable)
 						// to leave room for the stack
     numPages = divRoundUp(size, PageSize);
     size = numPages * PageSize;
+
 
     if(numPages > mm->GetFreePageCount()) {
         valid = false;
