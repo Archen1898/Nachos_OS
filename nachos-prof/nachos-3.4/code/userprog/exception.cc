@@ -29,6 +29,7 @@
 #include "pcbmanager.h"
 #include "thread.h"
 #include "machine.h"
+#include "memorymanager.h"
 
 //----------------------------------------------------------------------
 // ExceptionHandler
@@ -66,6 +67,12 @@ void doExit(int status) {
 
     // Manage PCB memory As a parent process
     PCB* pcb = currentThread->space->pcb;
+
+    MemoryManager *memManager = new MemoryManager();
+    if ((currentThread->space->GetNumPages()) >= (mm->GetFreePageCount())) {
+        memManager->DeallocatePage(currentThread->space->pcb->pid);
+        mm = memManager;
+    }
 
     // Delete exited children and set parent null for non-exited ones
     pcb->DeleteExitedChildrenSetParentNull();
@@ -156,6 +163,7 @@ int doFork(int functionAddr) {
     newThread->Fork(*childFunction, pcb->pid);
     //Output print when process is forked
     printf("Process [%d] Fork: start at address [%p] with [%d] pages memory\n", currentThread->space->pcb->pid, newThread->space, newThread->space->GetNumPages());
+
 
     // 9. return statement due to doFork being an int
     return pcb->pid;
