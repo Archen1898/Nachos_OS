@@ -25,7 +25,6 @@ the child process and then as a way to create a new address space for the child.
 Tests are ran on the code by using the fork.c, located in the test folder of the
 code folder. Through the usage of the phrase "make fork" due to the Makefile
 having fork included, I was able to test the code through that method.
-<<<<<<< HEAD
 
 
 Dillon Archer PID: 6224872
@@ -50,10 +49,8 @@ of reasons such as if there aren't enough free pages available within our
 memory manager that we can assign to the new address space. If it is successful, then
 we initialize the registers and set the new pcb to be the old pcb from the previous thread
 address space that we deleted. Then we execute the user program
-=======
 I did originally make edits to doExit according to the instructions given in the
 implementation guide, however, as I tested the doExit by using the Fork.c test file
 since it does call Exit there, I found that there issues causing segmentation faults.
 To resolve those, I reverted the code of doExit to the original set up and
 it was able to run completely after that.
->>>>>>> 26e090f20d908da9118cf4eccfde73b7dfd3e86d
