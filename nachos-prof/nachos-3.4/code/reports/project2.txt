@@ -56,3 +56,19 @@ memory manager that we can assign to the new address space. If it is successful,
 we initialize the registers and set the new pcb to be the old pcb from the previous thread
 address space that we deleted. Then we execute the user program
 
+
+Nagarjun Tumkur Sharathkumar
+PID: 6366321
+
+In my role for this project, I implemented the doKill and doJoin functions for Kill and Join system calls. 
+For the Kill system call, the process involves validating the provided process ID (PID) and terminating the 
+specified process. If the PID is invalid, the function returns -1; otherwise, it checks for self-termination
+and performs cleanup accordingly. In cases where the target process is different, it removes the thread from 
+the scheduler, displays a termination message, and returns 0 for success.
+
+The Join() allows a calling process to wait for the termination of a specified child process identified by its
+PID. The implementation includes validating the PID, checking the parent-child relationship, and using a loop
+to yield the calling thread until the child process exits. Upon exit, it retrieves the exit status, deletes
+the Process Control Block (PCB) of the child, and returns the exit status to the calling process. Testing 
+involved using fork.c and join.c to ensure correct process creation, termination, and proper handling of exit 
+statuses. The implemented functions enhance process management in the Nachos operating system.
