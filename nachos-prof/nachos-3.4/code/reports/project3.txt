@@ -1,0 +1,48 @@
+Project Group 7
+
+Anne Nguyen - PID: 5643071
+Dillon Archer - PID: 6224872
+Nagarjun Tumkur Sharathkumar - PID: 6366321
+
+Executing individual tests from the test directory can be done using the command:
+
+../userprog/nachos -x ./concurrentRead 
+
+../userprog/nachos -x ./cp
+
+Both "concurrentRead.c" and "cp.c" tests have been executed successfully.
+
+New Classes added:
+
+filesys/FileManager:
+This class is responsible for keeping track of all existing SysOpenFiles in the system and dishing
+out unique IDs to newly created SysOpenFile objects. These IDs function as indices in the array.
+
+filesys/SysOpenFile:
+Designed as per the project description, each SysOpenFile comes with a unique ID, a usage count, 
+the filename in the file system, and a pointer to the corresponding OpenFile object.
+
+filesys/UserOpenFile:
+The index serves as one of the SysOpenFile IDs, which are, in turn, indices into the array in the FileManager.
+
+Modified Classes:
+
+userprog/PCB:
+A BitMap is introduced to facilitate the assignment of unique IDs to new UserOpenFiles. The PCB now 
+boasts a List of UserOpenFiles. Upon invoking the Open syscall, a new UserOpenFile is crafted and added 
+to this list, offering access to all presently utilized files and their respective read positions.
+
+userprog/exception.cc:
+
+Create: Extracts the path name from register 4 and summons the fileSystem Create function.
+Open: Retrieves the path name, looks up the SysOpenFile table for an existing SysOpenFile, and inscribes 
+the freshly minted UserOpenFile ID into register 2.
+
+Close: Gleans the file ID from register 4. If valid, it scrutinizes the current PCB for a matching UserOpenFile.
+If the count is 0, it expels the SysOpenFile from the FileManager and liberates its ID.
+
+Write: Retrieves the buffer pointer, bytes to write, and file ID from registers 4, 5, and 6. If the ID is valid, 
+it duplicates data from the buffer into the file using the OpenFile->WriteAt function.
+
+Read: Snatches the buffer pointer, bytes to read, and file ID from registers 4, 5, and 6. It endeavors to read 
+from the provided file ID, synchronizing via a Lock, and updates the UserOpenFile offset post reading the requisite bytes.
